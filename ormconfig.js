@@ -1,3 +1,5 @@
+const __dev = process.env.NODE_ENV === 'development'
+
 /**
  * @type { import('typeorm').ConnectionOptions }
  */
@@ -8,8 +10,14 @@ const config = {
   database: process.env.TYPEORM_DATABASE,
   username: process.env.TYPEORM_USERNAME,
   password: process.env.TYPEORM_PASSWORD,
-  entities: ['dist/**/*.entities{.js|.ts}'],
-  logging: process.env.NODE_ENV === 'development'
+  migrationsTableName: 'migrations',
+  entities: ['dist/**/*.entity.js'],
+  migrations: ['dist/migrations/**/*.js'],
+  logging: __dev,
+  synchronize: __dev,
+  cli: {
+    migrationsDir: 'migrations'
+  }
 }
 
 module.exports = config
