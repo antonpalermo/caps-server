@@ -17,7 +17,7 @@ export class ArticleService {
     return await this.articleRepositort.save(article)
   }
 
-  async updateArticle(id: string, article: UpdateArticleDto): Promise<Article> {
-    return await this.articleRepositort.save({ id, ...article })
+  async updateArticle(article: UpdateArticleDto): Promise<Article> {
+    return await this.articleRepositort.save({ id: article.id, ...article })
   }
 }
