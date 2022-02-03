@@ -11,8 +11,13 @@ export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
   @Get()
-  getArticle(@Query('id') id: string) {
-    return 'is this your id ' + id
+  async getAllArticles(): Promise<Article[]> {
+    return this.articleService.getArticles()
+  }
+
+  @Get()
+  async getArticle(@Query('id') id: string): Promise<Article | undefined> {
+    return await this.articleService.findArticleById(id)
   }
 
   @Post('publish')
