@@ -41,4 +41,28 @@ export class ArticleService {
   async updateArticle(article: UpdateArticleDto): Promise<Article> {
     return await this.articleRepositort.save({ id: article.id, ...article })
   }
+
+  async deleteArticle(id: string): Promise<Article> {
+    const {
+      raw: [article]
+    } = await this.articleRepositort
+      .createQueryBuilder()
+      .delete()
+      .whereInIds(id)
+      .returning(['id', 'title', 'description', 'dataCreated', 'dateUpdated'])
+      .execute()
+
+    if (!article) {
+      throw new HttpException(
+        {
+          resource: 'Article',
+          query: id,
+          message: "The requested resource is not available at the moment :'("
+        },
+        HttpStatus.NOT_FOUND
+      )
+    }
+
+    return article
+  }
 }

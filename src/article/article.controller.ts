@@ -29,4 +29,9 @@ export class ArticleController {
   async updateArticle(@Body() data: UpdateArticleDto): Promise<Article> {
     return await this.articleService.updateArticle(data)
   }
+
+  @Post('delete')
+  async deleteArticle(@Query('id') id: string): Promise<Article> {
+    return await this.articleService.deleteArticle(id)
+  }
 }
