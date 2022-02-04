@@ -10,11 +10,11 @@ import { Article } from './entities/article.entity'
 export class ArticleService {
   constructor(
     @InjectRepository(Article)
-    private articleRepositort: Repository<Article>
+    private articleRepo: Repository<Article>
   ) {}
 
-  async findArticleById(id: string): Promise<Article> {
-    const article = await this.articleRepositort.findOne(id)
+  async getArticle(id: string): Promise<Article> {
+    const article = await this.articleRepo.findOne(id)
     if (!article) {
       throw new HttpException(
         {
@@ -29,23 +29,23 @@ export class ArticleService {
   }
 
   async getArticles(): Promise<Article[]> {
-    return await this.articleRepositort.find({
+    return await this.articleRepo.find({
       select: ['id', 'title', 'description', 'dataCreated', 'dateUpdated']
     })
   }
 
   async createArticle(article: CreateArticleDto): Promise<Article> {
-    return await this.articleRepositort.save(article)
+    return await this.articleRepo.save(article)
   }
 
   async updateArticle(article: UpdateArticleDto): Promise<Article> {
-    return await this.articleRepositort.save({ id: article.id, ...article })
+    return await this.articleRepo.save({ id: article.id, ...article })
   }
 
   async deleteArticle(id: string): Promise<Article> {
     const {
       raw: [article]
-    } = await this.articleRepositort
+    } = await this.articleRepo
       .createQueryBuilder()
       .delete()
       .whereInIds(id)
