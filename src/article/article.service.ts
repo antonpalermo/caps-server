@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 
@@ -28,10 +33,27 @@ export class ArticleService {
     return article
   }
 
-  async getArticles(): Promise<Article[]> {
-    return await this.articleRepo.find({
-      select: ['id', 'title', 'description', 'dataCreated', 'dateUpdated']
-    })
+  async getArticles() {
+    let data: Article[]
+    try {
+      data = await this.articleRepo.query(`
+        SELECT 
+          id,
+          doc::jsonb->'content'->0->'content'->0->'text' AS title,
+          CASE WHEN doc::jsonb->'content'->1 <@ '{"type": "description"}'::jsonb THEN doc::jsonb->'content'->2->'content'->0->'text'
+          ELSE doc::jsonb->'content'->1->'content'->0->'text'
+          END description,
+          date_created, 
+          date_updated
+        FROM articles;
+        `)
+    } catch (err) {
+      throw new InternalServerErrorException({
+        resource: 'Article',
+        query: 'GET_ALL_AVAILABLE_ARTICLES'
+      })
+    }
+    return data
   }
 
   async createArticle(article: CreateArticleDto): Promise<Article> {

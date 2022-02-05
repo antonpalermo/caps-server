@@ -18,7 +18,7 @@ export class ArticleController {
     return this.articleSrv.getArticles()
   }
 
-  @Get()
+  @Get('get')
   /**
    * get article base on the id provided
    */

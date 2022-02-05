@@ -13,18 +13,12 @@ export class Article extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
-  @Column({ type: 'text' })
-  title: string
-
-  @Column({ type: 'text' })
-  description: string
-
   @Column({ type: 'jsonb' })
-  content: Doc
+  doc: Doc
 
-  @CreateDateColumn({ type: 'timestamptz' })
-  dataCreated: Date
+  @CreateDateColumn({ name: 'date_created', type: 'timestamptz' })
+  dateCreated: Date
 
-  @UpdateDateColumn({ type: 'timestamptz' })
+  @UpdateDateColumn({ name: 'date_updated', type: 'timestamptz' })
   dateUpdated: Date
 }
