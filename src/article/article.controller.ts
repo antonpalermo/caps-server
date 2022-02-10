@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  InternalServerErrorException,
+  Post,
+  Query
+} from '@nestjs/common'
 
 import { ArticleService } from './article.service'
 import { Article } from './entities/article.entity'
@@ -30,8 +37,21 @@ export class ArticleController {
   /**
    * create a new article base on the provided data.
    */
-  async createArticle(@Body() data: CreateArticleDto): Promise<Article> {
-    return await this.articleSrv.createArticle(data)
+  async createArticle(
+    @Body() data: CreateArticleDto
+  ): Promise<Record<string, any>> {
+    const doc = await this.articleSrv.createArticle(data)
+    if (!doc) {
+      throw new InternalServerErrorException({
+        resource: 'Article',
+        query: 'CREATE_ARTICLE_ERROR'
+      })
+    }
+
+    return {
+      id: doc.id,
+      message: 'Document successfully published.'
+    }
   }
 
   @Post('update')
