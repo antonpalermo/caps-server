@@ -45,7 +45,7 @@ export class DocService {
           END description,
           date_created, 
           date_updated
-        FROM articles;
+        FROM docs;
         `)
     } catch (err) {
       throw new InternalServerErrorException({
