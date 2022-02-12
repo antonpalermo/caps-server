@@ -6,15 +6,15 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
-import { Doc } from './doc-content'
+import { Doc as DocContent } from './doc-content'
 
-@Entity({ name: 'articles' })
-export class Article extends BaseEntity {
+@Entity({ name: 'docs' })
+export class Doc extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
   @Column({ type: 'jsonb' })
-  doc: Doc
+  doc: DocContent
 
   @CreateDateColumn({ name: 'date_created', type: 'timestamptz' })
   dateCreated: Date
