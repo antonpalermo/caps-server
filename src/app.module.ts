@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 
-import { ArticleModule } from './article/article.module'
+import { DocModule } from './article/doc.module'
 
 @Module({
   imports: [
@@ -13,7 +13,7 @@ import { ArticleModule } from './article/article.module'
       isGlobal: true
     }),
     TypeOrmModule.forRoot(),
-    ArticleModule
+    DocModule
   ],
   controllers: [AppController],
   providers: [AppService]

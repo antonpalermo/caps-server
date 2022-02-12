@@ -7,19 +7,19 @@ import {
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 
-import { CreateArticleDto } from './dto/create-article.dto'
-import { UpdateArticleDto } from './dto/update-article.dto'
-import { Article } from './entities/article.entity'
+import { CreateDocDto } from './dto/create-doc.dto'
+import { UpdateDocDto } from './dto/update-doc.dto'
+import { Doc } from './entities/doc.entity'
 
 @Injectable()
-export class ArticleService {
+export class DocService {
   constructor(
-    @InjectRepository(Article)
-    private articleRepo: Repository<Article>
+    @InjectRepository(Doc)
+    private docRepo: Repository<Doc>
   ) {}
 
-  async getArticle(id: string): Promise<Article> {
-    const article = await this.articleRepo.findOne(id)
+  async getDoc(id: string): Promise<Doc> {
+    const article = await this.docRepo.findOne(id)
     if (!article) {
       throw new HttpException(
         {
@@ -33,10 +33,10 @@ export class ArticleService {
     return article
   }
 
-  async getArticles() {
-    let data: Article[]
+  async getDocs() {
+    let data: Doc[]
     try {
-      data = await this.articleRepo.query(`
+      data = await this.docRepo.query(`
         SELECT 
           id,
           doc::jsonb->'content'->0->'content'->0->'text' AS title,
@@ -56,18 +56,18 @@ export class ArticleService {
     return data
   }
 
-  async createArticle(article: CreateArticleDto): Promise<Article> {
-    return await this.articleRepo.save(article)
+  async createDoc(article: CreateDocDto): Promise<Doc> {
+    return await this.docRepo.save(article)
   }
 
-  async updateArticle(article: UpdateArticleDto): Promise<Article> {
-    return await this.articleRepo.save({ id: article.id, ...article })
+  async updateDoc(article: UpdateDocDto): Promise<Doc> {
+    return await this.docRepo.save({ id: article.id, ...article })
   }
 
-  async deleteArticle(id: string): Promise<Article> {
+  async deleteDoc(id: string): Promise<Doc> {
     const {
       raw: [article]
-    } = await this.articleRepo
+    } = await this.docRepo
       .createQueryBuilder()
       .delete()
       .whereInIds(id)
