@@ -8,6 +8,8 @@ export class UserController {
 
   @Post('create')
   async create(@Body() data: CreateUserDto): Promise<any> {
-    await this.userSrv.create(data)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...rest } = await this.userSrv.create(data)
+    return rest
   }
 }
