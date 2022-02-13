@@ -1,4 +1,4 @@
-import { Body, Controller, Patch, Post, Query } from '@nestjs/common'
+import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { User } from './entities/user.entity'
@@ -7,6 +7,11 @@ import { UserService } from './user.service'
 @Controller({ path: 'user', version: '1' })
 export class UserController {
   constructor(private readonly userSrv: UserService) {}
+
+  @Get()
+  async user(@Query('id') id: string): Promise<User | undefined> {
+    return await this.userSrv.user(id)
+  }
 
   @Post('create')
   async create(@Body() data: CreateUserDto): Promise<any> {
