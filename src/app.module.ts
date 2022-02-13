@@ -6,6 +6,7 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 
 import { DocModule } from './article/doc.module'
+import { UserModule } from './user/user.module'
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import { DocModule } from './article/doc.module'
       isGlobal: true
     }),
     TypeOrmModule.forRoot(),
-    DocModule
+    DocModule,
+    UserModule
   ],
   controllers: [AppController],
   providers: [AppService]
