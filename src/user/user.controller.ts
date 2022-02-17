@@ -13,10 +13,11 @@ import { LocalAuthGuard } from 'src/auth/local-auth.guard'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { User } from './entities/user.entity'
+import { JwtAuthGuard } from './strategy/jwt-auth.guard'
 import { UserService } from './user.service'
 
 type Request = ExpressRequest & {
-  user: Partial<User>
+  user: User
 }
 
 @Controller({ path: 'user', version: '1' })
@@ -28,10 +29,16 @@ export class UserController {
     return await this.userSrv.user(id)
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('all')
+  async users(): Promise<Partial<User>[]> {
+    return await this.userSrv.users()
+  }
+
   @UseGuards(LocalAuthGuard)
   @Post('authenticate')
   async authenticate(@Request() req: Request): Promise<any> {
-    return req.user
+    return await this.userSrv.sign(req.user)
   }
 
   @Post('create')

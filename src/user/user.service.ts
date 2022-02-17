@@ -4,6 +4,8 @@ import {
   NotFoundException
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { JwtService } from '@nestjs/jwt'
+
 import { Repository } from 'typeorm'
 
 import { User } from './entities/user.entity'
@@ -16,7 +18,8 @@ import { hash } from 'argon2'
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepo: Repository<User>
+    private readonly userRepo: Repository<User>,
+    private readonly jwtSrv: JwtService
   ) {}
 
   async user(id: string): Promise<User | undefined> {
@@ -30,6 +33,23 @@ export class UserService {
     }
 
     return user
+  }
+
+  async users(): Promise<Partial<User>[]> {
+    const findAll = await this.userRepo.find()
+
+    const users = findAll.map((user: User) => {
+      return {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        username: user.username,
+        dateCreated: user.dateCreated,
+        dateUpdated: user.dateUpdated
+      }
+    })
+
+    return users
   }
 
   async create(data: CreateUserDto): Promise<User> {
@@ -60,5 +80,12 @@ export class UserService {
     }
 
     return user
+  }
+
+  async sign(user: User) {
+    const payload = { id: user.id }
+    return {
+      access_token: await this.jwtSrv.signAsync(payload)
+    }
   }
 }
