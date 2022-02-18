@@ -4,7 +4,6 @@ import {
   NotFoundException
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { JwtService } from '@nestjs/jwt'
 
 import { Repository } from 'typeorm'
 
@@ -18,8 +17,7 @@ import { hash } from 'argon2'
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepo: Repository<User>,
-    private readonly jwtSrv: JwtService
+    private readonly userRepo: Repository<User>
   ) {}
 
   async user(id: string): Promise<User | undefined> {
@@ -80,12 +78,5 @@ export class UserService {
     }
 
     return user
-  }
-
-  async sign(user: User) {
-    const payload = { id: user.id }
-    return {
-      access_token: await this.jwtSrv.signAsync(payload)
-    }
   }
 }

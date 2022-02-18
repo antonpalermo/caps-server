@@ -5,15 +5,17 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
-  Request
+  Request,
+  UseGuards
 } from '@nestjs/common'
 import { Request as ExpressRequest } from 'express'
+import { AuthService } from 'src/auth/auth.service'
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
 import { LocalAuthGuard } from 'src/auth/local-auth.guard'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { User } from './entities/user.entity'
-import { JwtAuthGuard } from './strategy/jwt-auth.guard'
+
 import { UserService } from './user.service'
 
 type Request = ExpressRequest & {
@@ -22,7 +24,10 @@ type Request = ExpressRequest & {
 
 @Controller({ path: 'user', version: '1' })
 export class UserController {
-  constructor(private readonly userSrv: UserService) {}
+  constructor(
+    private readonly userSrv: UserService,
+    private readonly authSrv: AuthService
+  ) {}
 
   @Get()
   async user(@Query('id') id: string): Promise<User | undefined> {
@@ -38,7 +43,7 @@ export class UserController {
   @UseGuards(LocalAuthGuard)
   @Post('authenticate')
   async authenticate(@Request() req: Request): Promise<any> {
-    return await this.userSrv.sign(req.user)
+    return await this.authSrv.sign(req.user)
   }
 
   @Post('create')
