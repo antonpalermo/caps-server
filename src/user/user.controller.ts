@@ -40,11 +40,11 @@ export class UserController {
     return await this.userSrv.users()
   }
 
-  @UseGuards(LocalAuthGuard)
-  @Post('authenticate')
-  async authenticate(@Request() req: Request): Promise<any> {
-    return await this.authSrv.sign(req.user)
-  }
+  // @UseGuards(LocalAuthGuard)
+  // @Post('authenticate')
+  // async authenticate(@Request() req: Request): Promise<any> {
+  //   // return await this.authSrv.sign(req.user)
+  // }
 
   @Post('create')
   async create(@Body() data: CreateUserDto): Promise<any> {
