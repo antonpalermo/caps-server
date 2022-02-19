@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common'
+import { ConfigModule } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
 import { PassportModule } from '@nestjs/passport'
 import { TypeOrmModule } from '@nestjs/typeorm'
@@ -14,7 +15,8 @@ import { LocalStrategy } from './strategy/local.strategy'
     PassportModule,
     JwtModule.registerAsync({
       useClass: JwtConfigService
-    })
+    }),
+    ConfigModule
   ],
   providers: [AuthService, LocalStrategy, JwtConfigService, JwtStrategy],
   exports: [AuthService]
