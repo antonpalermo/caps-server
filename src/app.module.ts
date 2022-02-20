@@ -7,7 +7,6 @@ import { AppService } from './app.service'
 
 import { DocModule } from './doc/doc.module'
 import { UserModule } from './user/user.module'
-import { AuthModule } from './auth/auth.module'
 
 @Module({
   imports: [
@@ -16,8 +15,7 @@ import { AuthModule } from './auth/auth.module'
     }),
     TypeOrmModule.forRoot(),
     DocModule,
-    UserModule,
-    AuthModule
+    UserModule
   ],
   controllers: [AppController],
   providers: [AppService]
