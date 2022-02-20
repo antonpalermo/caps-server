@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException
+} from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 
 import { Repository } from 'typeorm'
@@ -10,7 +14,7 @@ import { JwtService } from '@nestjs/jwt'
 import { User } from 'src/user/entities/user.entity'
 import { Credential } from './utils/credentials'
 import { Token } from './utils/token'
-import { set } from './utils/cookie'
+import { TokenPayload } from './utils/token-payload'
 
 @Injectable()
 export class AuthService {
@@ -39,6 +43,32 @@ export class AuthService {
     return {
       user: rest,
       accessToken: await this.createToken({ id: rest.id }, Token.access)
+    }
+  }
+
+  async refresh(token: string): Promise<Record<string, any>> {
+    if (!token) {
+      throw new BadRequestException()
+    }
+
+    const { id, ...rest } = await this.jwtSrv.verifyAsync<TokenPayload>(token, {
+      secret: this.configSrv.get<string>('JWT_REFRESH_SECRET')
+    })
+
+    // check if token is valid
+    if (rest) {
+      // check if the user existed from id on the token provided
+      const user = await this.userRepo.findOne({ where: { id } })
+      // if not available then throw error else do nothing.
+      if (!user) {
+        throw new UnauthorizedException()
+      }
+    }
+
+    // if all checks are passed then return new refresh token
+    return {
+      id,
+      refreshToken: await this.createToken({ id }, Token.refresh)
     }
   }
 

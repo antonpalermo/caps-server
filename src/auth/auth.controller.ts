@@ -1,6 +1,7 @@
 import { Body, Controller, Post, Res } from '@nestjs/common'
 import { Response } from 'express'
 import { AuthService } from './auth.service'
+import { Cookies } from './decorators/cookies.decorator'
 import { set } from './utils/cookie'
 import { Credential } from './utils/credentials'
 import { Token } from './utils/token'
@@ -22,5 +23,20 @@ export class AuthController {
     )
 
     return res.status(200).send(data)
+  }
+
+  @Post('refresh_token')
+  async refreshAccessToken(
+    @Cookies('jit') token: string,
+    @Res() res: Response
+  ): Promise<Record<string, any>> {
+    const { id, refreshToken } = await this.authSrv.refresh(token)
+
+    set(res, await this.authSrv.createToken({ id }, Token.refresh))
+
+    return res.status(200).send({
+      id,
+      refreshToken
+    })
   }
 }
