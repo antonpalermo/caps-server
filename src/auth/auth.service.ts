@@ -68,7 +68,7 @@ export class AuthService {
     // if all checks are passed then return new refresh token
     return {
       id,
-      refreshToken: await this.createToken({ id }, Token.refresh)
+      accessToken: await this.createToken({ id }, Token.access)
     }
   }
 

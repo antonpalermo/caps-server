@@ -30,13 +30,13 @@ export class AuthController {
     @Cookies('jit') token: string,
     @Res() res: Response
   ): Promise<Record<string, any>> {
-    const { id, refreshToken } = await this.authSrv.refresh(token)
+    const { id, accessToken } = await this.authSrv.refresh(token)
 
     set(res, await this.authSrv.createToken({ id }, Token.refresh))
 
     return res.status(200).send({
       id,
-      refreshToken
+      accessToken
     })
   }
 }
